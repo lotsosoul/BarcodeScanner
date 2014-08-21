@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
-        id        = "com.phonegap.ryanw.barcodedemo"
+        id        = "com.premgrp.avr.barcodescanner"
         version   = "2.0.0">
     <name>PREM Scanner</name>
 
     <description>
-        Scans barcodes.
+        This application scans a package/barcode and allows a PREM employee to insert that code 
+        into Salesforce.
     </description>
 
-    <author href="http://phonegap.com" email="support@phonegap.com">
+    <author href="http://premgrp.com" email="aaron.vonreuter@premgrp.com">
         PhoneGap Team
     </author>
 
@@ -24,7 +25,7 @@
     <preference name="phonegap-version" value="3.1.0" />
     <preference name="orientation"      value="default" />
     <preference name="target-device"    value="universal" />
-    <preference name="fullscreen"       value="false" />
+    <preference name="fullscreen"       value="true" />
     <preference name="webviewbounce"    value="false" />
 
     <icon src="icon.png" />
