@@ -17,6 +17,9 @@
  * under the License.
  */
 var app = {
+
+    forcetkClient: null,
+
     // Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -40,7 +43,8 @@ var app = {
     },
 
     // Update DOM on a Received Event
-    receivedEvent: function(id) {
+    receivedEvent: function(id) 
+    {
         var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
@@ -49,9 +53,38 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
+
+        if(id == 'deviceready')
+        {
+            cordova.require("salesforce/plugin/oauth").getAuthCredentials(salesforceSessionRefreshed, app.getAuthCredentialsError);
+
+            //register to receive notifications when autoRefreshOnForeground refreshes the sfdc session
+            document.addEventListener("salesforceSessionRefresh",salesforceSessionRefreshed,false);
+        }
     },
 
-    scan: function() {
+    salesforceSessionRefreshed: function(creds) 
+    {        
+        // Depending on how we come into this method, `creds` may be callback data from the auth
+        // plugin, or an event fired from the plugin.  The data is different between the two.
+        var credsData = creds;
+        if (creds.data)  // Event sets the `data` object with the auth data.
+            credsData = creds.data;
+
+        app.forcetkClient = new forcetk.Client(credsData.clientId, credsData.loginUrl, null,
+            cordova.require("salesforce/plugin/oauth").forcetkRefresh);
+        app.forcetkClient.setSessionToken(credsData.accessToken, apiVersion, credsData.instanceUrl);
+        app.forcetkClient.setRefreshToken(credsData.refreshToken);
+        app.forcetkClient.setUserAgentString(credsData.userAgent);
+    },
+
+    getAuthCredentialsError: function(error) 
+    {
+        //logToConsole("getAuthCredentialsError: " + error);
+    },
+
+    scan: function() 
+    {
         console.log('scanning');
         
         var scanner = cordova.require("cordova/plugin/BarcodeScanner");
@@ -80,7 +113,8 @@ var app = {
         } );
     },
 
-    encode: function() {
+    encode: function() 
+    {
         var scanner = cordova.require("cordova/plugin/BarcodeScanner");
 
         scanner.encode(scanner.Encode.TEXT_TYPE, "http://www.nhl.com", function(success) {
