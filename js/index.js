@@ -54,13 +54,11 @@ var app = {
 
         console.log('Received Event: ' + id);
 
-        if(id == 'deviceready')
-        {
-            cordova.require("salesforce/plugin/oauth").getAuthCredentials(salesforceSessionRefreshed, app.getAuthCredentialsError);
+        cordova.require("salesforce/plugin/oauth").getAuthCredentials(salesforceSessionRefreshed, this.getAuthCredentialsError);
 
-            //register to receive notifications when autoRefreshOnForeground refreshes the sfdc session
-            document.addEventListener("salesforceSessionRefresh",salesforceSessionRefreshed,false);
-        }
+        //register to receive notifications when autoRefreshOnForeground refreshes the sfdc session
+        document.addEventListener("salesforceSessionRefresh",salesforceSessionRefreshed,false);
+       
     },
 
     salesforceSessionRefreshed: function(creds) 
@@ -71,11 +69,11 @@ var app = {
         if (creds.data)  // Event sets the `data` object with the auth data.
             credsData = creds.data;
 
-        app.forcetkClient = new forcetk.Client(credsData.clientId, credsData.loginUrl, null,
+        this.forcetkClient = new forcetk.Client(credsData.clientId, credsData.loginUrl, null,
             cordova.require("salesforce/plugin/oauth").forcetkRefresh);
-        app.forcetkClient.setSessionToken(credsData.accessToken, apiVersion, credsData.instanceUrl);
-        app.forcetkClient.setRefreshToken(credsData.refreshToken);
-        app.forcetkClient.setUserAgentString(credsData.userAgent);
+        this.forcetkClient.setSessionToken(credsData.accessToken, apiVersion, credsData.instanceUrl);
+        this.forcetkClient.setRefreshToken(credsData.refreshToken);
+        this.forcetkClient.setUserAgentString(credsData.userAgent);
     },
 
     getAuthCredentialsError: function(error) 
